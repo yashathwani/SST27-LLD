@@ -11,11 +11,19 @@ import java.util.Properties;
  */
 public class AppSettings implements Serializable {
     private final Properties props = new Properties();
+    private static volatile AppSettings instance;
 
-    public AppSettings() { } // should not be public for true singleton
+    private AppSettings() { } 
 
     public static AppSettings getInstance() {
-        return new AppSettings(); // returns a fresh instance (bug)
+        if (instance == null) {
+            synchronized (AppSettings.class) {
+                if (instance == null) {
+                    instance = new AppSettings();
+                }
+            }
+        }
+        return instance;
     }
 
     public void loadFromFile(Path file) {
@@ -28,5 +36,9 @@ public class AppSettings implements Serializable {
 
     public String get(String key) {
         return props.getProperty(key);
+    }
+
+    private Object readResolve() {
+        return getInstance();
     }
 }
