@@ -1,5 +1,6 @@
 package com.example.notifications;
-
+import com.example.notifications.EmailNotifier;
+import com.example.notifications.Notifier;
 /**
  * Starter demo that uses only the existing Email notifier.
  * TODOs guide you to add decorators and compose them.
@@ -24,10 +25,20 @@ public class Demo {
         //      d) Email + WhatsApp + Slack
         //
         // Example (after you implement):
-        // Notifier smsAndEmail = new SmsDecorator(base, "+91-99999-11111");
-        // smsAndEmail.notify("Build green ✅");
-        //
-        // Notifier full = new SlackDecorator(new WhatsAppDecorator(base, "user_wa"), "deployments");
-        // full.notify("Deployment completed 🚀");
+        Notifier smsAndEmail = new SmsDecorator(base, "+91-99999-11111");
+        smsAndEmail.notify("Build green ✅");
+        
+        Notifier full = new SlackDecorator(new WhatsAppDecorator(base, "user_wa"), "deployments");
+        full.notify("Deployment completed 🚀");
+
+        Notifier emailAndWhatsapp = new WhatsappDecorator(base, "user_wa");
+        emailAndWhatsapp.notify("Meeting at 10 AM");
+
+
+        Notifier emailAndSlack = new SlackDecorator(base, "general");
+        emailAndSlack.notify("Daily standup in 5 minutes");
+
+        Notifier emailSmsWhatsapp = new WhatsappDecorator(new SmsDecorator(base, "+91-99999-11111"), "user_wa");
+        emailSmsWhatsapp.notify("Project deadline approaching");
     }
 }
